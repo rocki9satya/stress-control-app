@@ -22,6 +22,8 @@ jobs:
           nvm use v20.11.0
           node -v
           npm -v
+      - name: Install PM2 globally
+        run: npm install -g pm2
 
       - name: Install Backend Dependencies
         working-directory: backend
