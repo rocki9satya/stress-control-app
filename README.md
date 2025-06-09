@@ -1,4 +1,4 @@
-# Stress Control App
+# Stress Control App for test
 
 This app lets you control simulated stress tests from a UI.
 
