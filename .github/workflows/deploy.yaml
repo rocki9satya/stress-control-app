@@ -20,8 +20,7 @@ jobs:
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           nvm use v20.11.0
-          node -v
-          npm -v
+          nvm ls
       - name: Install PM2 globally
         run: npm install -g pm2
 
@@ -35,6 +34,7 @@ jobs:
 
       - name: Start Services with PM2
         run: |
+          nvm ls
           pm2 delete all || true
           pm2 start pm2.config.js
           pm2 save
