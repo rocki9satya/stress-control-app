@@ -2,17 +2,26 @@ version: '3.8'
 
 services:
   backend:
+    hostname: backend
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "4000:4000"
     restart: unless-stopped
+    networks:
+      - net
 
   frontend:
+    hostname: frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
     restart: unless-stopped
+    networks:
+      - net
+networks:
+  net:
+    driver: bridge

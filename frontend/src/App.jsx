@@ -7,7 +7,7 @@ export default function App() {
   const [cpu, setCpu] = useState(false);
 
   const sendRequest = () => {
-    fetch('http://localhost:4000/api/stress', {
+    fetch('/api/stress', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ requests, memory, cpu })
@@ -16,7 +16,7 @@ export default function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch('http://localhost:4000/api/status')
+      fetch('/api/status')
         .then(res => res.json())
         .then(data => setStatus(data));
     }, 1000);
