@@ -1,0 +1,9 @@
+:80 {
+    root * /app/dist
+    file_server
+    reverse_proxy /api/* backend {
+        transport http
+        header_up Host {host}
+        header_up X-Forwarded-Proto http
+    }
+}

@@ -9,7 +9,11 @@ let memoryLoad = false;
 let cpuLoad = false;
 
 const app = express();
-app.use(cors());
+
+app.use(cors({
+  origin: '*'
+}));
+
 app.use(express.json());
 
 // Logger middleware for incoming requests

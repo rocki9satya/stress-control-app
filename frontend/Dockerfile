@@ -1,14 +1,14 @@
-# frontend/Dockerfile
-
-FROM node:20-alpine
-
+# Build stage
+FROM node:24-alpine3.20 AS builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
+COPY package.json .
+RUN npm install --legacy-peer-deps
 COPY . .
-RUN npm install -g pm2
-ENV PATH=/app/node_modules/.bin:$PATH
+RUN npm run build
 
-EXPOSE 5173
-
-CMD ["pm2-runtime", "pm2.config.js"]
+# Production stage
+FROM caddy:latest
+COPY --from=builder /app/dist /app/dist
+COPY Caddyfile /etc/caddy/Caddyfile
+EXPOSE 80
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]
