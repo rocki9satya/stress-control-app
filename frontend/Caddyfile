@@ -1,7 +1,7 @@
 :80 {
     root * /app/dist
     file_server
-    reverse_proxy /api/* backend {
+    reverse_proxy /api/* backend:4000 {
         transport http
         header_up Host {host}
         header_up X-Forwarded-Proto http
