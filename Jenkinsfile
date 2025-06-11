@@ -3,14 +3,14 @@ pipeline {
 
   environment {
     IMAGE_NAME = "satya03521/stress-control-ui"
-    IMAGE_TAG = "prod-v3.0"
+    IMAGE_TAG = "dev-v3.0"
     DOCKER_COMPOSE_FILE = 'docker-compose.yaml'
   }
 
   stages {
     stage('Checkout') {
       steps {
-        git url: 'https://github.com/rocki9satya/stress-control-app.git', branch: 'main'
+        git url: 'https://github.com/rocki9satya/stress-control-app.git', branch: 'dev'
       }
     }
 
@@ -22,7 +22,7 @@ pipeline {
       }
     }
 
-    stage('Build & Deploy Prod') {
+    stage('Build & Deploy Dev') {
       steps {
         sh 'docker compose -f $DOCKER_COMPOSE_FILE build'
         sh 'docker compose -f $DOCKER_COMPOSE_FILE down'
