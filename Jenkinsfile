@@ -1,4 +1,4 @@
-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pipeline {
+pipeline {
   agent any
 
   environment {
