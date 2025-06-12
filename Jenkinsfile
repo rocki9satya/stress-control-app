@@ -24,13 +24,8 @@ pipeline {
       }
     stage('Fetch Terraform Outputs') {
       steps {
-        copyArtifacts(
-          projectName: 'job1-eks-terraform',
-          selector: lastSuccessful()
-        )
-
         script {
-          def tfVars = readFile('eks_output.txt').split('\n')
+          def tfVars = readFile('/var/jenkins_home/workspace/eks-create-job/eks_output.txt').split('\n')
           def outputMap = [:]
           for (line in tfVars) {
             def (key, value) = line.tokenize('=').collect { it.trim().replaceAll('"', '') }
@@ -39,9 +34,12 @@ pipeline {
 
           env.CLUSTER_NAME = outputMap["cluster_name"]
           env.AWS_REGION = outputMap["region"]
+
+          echo "Cluster: ${env.CLUSTER_NAME}, Region: ${env.AWS_REGION}"
         }
       }
-    }
+}
+
 
     stage('Update Kubeconfig') {
       steps {
