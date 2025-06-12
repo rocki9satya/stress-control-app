@@ -15,6 +15,13 @@ pipeline {
         git url: 'https://github.com/rocki9satya/stress-control-app.git', branch: "${env.BRANCH_NAME}"
       }
     }
+  stage('Trigger EKS Provisioning Job1') {
+      steps {
+        script {
+          build job: 'eks-create-job', wait: true
+        }
+      }
+    }
 
     stage('Login to DockerHub') {
       steps {
