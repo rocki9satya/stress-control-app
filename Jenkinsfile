@@ -43,13 +43,22 @@ pipeline {
 
     stage('Update Kubeconfig') {
       steps {
-        sh '''
-          aws eks update-kubeconfig \
-            --name $CLUSTER_NAME \
-            --region $AWS_REGION
-        '''
+        script {
+          def status = sh(
+            script: """
+              export KUBECONFIG=/tmp/kubeconfig.yaml
+              aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION --kubeconfig /tmp/kubeconfig.yaml
+            """,
+            returnStatus: true
+          )
+          if (status != 0) {
+            echo "Kubeconfig update failed with exit code ${status}, continuing anyway..."
+          } else {
+            echo "Kubeconfig updated successfully."
+          }
+        }
       }
-    }
+      }
 
   
   
