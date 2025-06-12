@@ -15,6 +15,53 @@ pipeline {
         git url: 'https://github.com/rocki9satya/stress-control-app.git', branch: "${env.BRANCH_NAME}"
       }
     }
+    stage('Trigger EKS Provisioning Job1') {
+        steps {
+          script {
+            build job: 'eks-create-job', wait: true
+          }
+        }
+      }
+    stage('Fetch Terraform Outputs') {
+      steps {
+        script {
+          def tfVars = readFile('/var/jenkins_home/workspace/eks-create-job/eks_output.txt').split('\n')
+          def outputMap = [:]
+          for (line in tfVars) {
+            def (key, value) = line.tokenize('=').collect { it.trim().replaceAll('"', '') }
+            outputMap[key] = value
+          }
+
+          env.CLUSTER_NAME = outputMap["cluster_name"]
+          env.AWS_REGION = outputMap["region"]
+
+          echo "Cluster: ${env.CLUSTER_NAME}, Region: ${env.AWS_REGION}"
+        }
+      }
+}
+
+
+    stage('Update Kubeconfig') {
+      steps {
+        script {
+          def status = sh(
+            script: """
+              export KUBECONFIG=/tmp/kubeconfig.yaml
+              aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION --kubeconfig /tmp/kubeconfig.yaml
+            """,
+            returnStatus: true
+          )
+          if (status != 0) {
+            echo "Kubeconfig update failed with exit code ${status}, continuing anyway..."
+          } else {
+            echo "Kubeconfig updated successfully."
+          }
+        }
+      }
+      }
+
+  
+  
 
     stage('Login to DockerHub') {
       steps {
